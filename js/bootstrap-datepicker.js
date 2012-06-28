@@ -62,6 +62,7 @@
 		constructor: Datepicker,
 		
 		show: function(e) {
+			if (this.isInput) this.element.prop('disabled', true);
 			this.picker.show();
 			this.height = this.component ? this.component.outerHeight() : this.element.outerHeight();
 			this.place();
@@ -88,6 +89,7 @@
 				$(document).off('mousedown', this.hide);
 			}
 			this.setValue();
+			if (this.isInput) this.element.prop('disabled', false);
 			this.element.trigger({
 				type: 'hide',
 				date: this.date
