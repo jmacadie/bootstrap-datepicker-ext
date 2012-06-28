@@ -24,6 +24,8 @@
 	var Datepicker = function(element, options){
 		this.element = $(element);
 		this.format = DPGlobal.parseFormat(options.format||this.element.data('date-format')||'mm/dd/yyyy');
+		this.minDate = DPGlobal.parseDate(options.minDate||this.element.data('minDate')||'', this.format);
+		this.maxDate = DPGlobal.parseDate(options.maxDate||this.element.data('maxDate')||'', this.format);
 		this.picker = $(DPGlobal.template)
 							.appendTo('body')
 							.on({
@@ -144,7 +146,8 @@
 			var d = new Date(this.viewDate),
 				year = d.getFullYear(),
 				month = d.getMonth(),
-				currentDate = this.date.valueOf();
+				currentDate = this.date.valueOf(),
+				noDate = new Date(1970, 1, 1, 0, 0, 0);
 			this.picker.find('.datepicker-days th:eq(1)')
 						.text(DPGlobal.dates.months[month]+' '+year);
 			var prevMonth = new Date(year, month-1, 28,0,0,0,0),
@@ -161,15 +164,20 @@
 					html.push('<tr>');
 				}
 				clsName = '';
-				if (prevMonth.getMonth() < month) {
-					clsName += ' old';
-				} else if (prevMonth.getMonth() > month) {
-					clsName += ' new';
+				if ((this.minDate == noDate || prevMonth >= this.minDate) && (this.maxDate == noDate || prevMonth <= this.maxDate)) {
+					clsName += 'day';
+					if (prevMonth.getMonth() < month) {
+						clsName += ' old';
+					} else if (prevMonth.getMonth() > month) {
+						clsName += ' new';
+					}
+					if (prevMonth.valueOf() == currentDate) {
+						clsName += ' active';
+					}
+				} else {
+					clsName += 'outOfRange'
 				}
-				if (prevMonth.valueOf() == currentDate) {
-					clsName += ' active';
-				}
-				html.push('<td class="day'+clsName+'">'+prevMonth.getDate() + '</td>');
+				html.push('<td class="'+clsName+'">'+prevMonth.getDate() + '</td>');
 				if (prevMonth.getDay() == this.weekEnd) {
 					html.push('</tr>');
 				}
