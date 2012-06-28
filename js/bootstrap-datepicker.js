@@ -319,7 +319,7 @@
 			return [31, (DPGlobal.isLeapYear(year) ? 29 : 28), 31, 30, 31, 30, 31, 31, 30, 31, 30, 31][month]
 		},
 		parseFormat: function(format){
-			var separator = format.match(/[.\/-].*?/),
+			var separator = format.match(/[.|\/|-| ].*?/),
 				parts = format.split(/\W+/);
 			if (!separator || !parts || parts.length == 0){
 				throw new Error("Invalid date format.");
@@ -332,7 +332,7 @@
 				val;
 			if (parts.length == format.parts.length) {
 				for (var i=0, cnt = format.parts.length; i < cnt; i++) {
-					val = parseInt(parts[i], 10)||1;
+					val = (parts[i].match(/[0-9]/)) ? parseInt(parts[i], 10)||1 : parts[i];
 					switch(format.parts[i]) {
 						case 'dd':
 						case 'd':
@@ -341,6 +341,12 @@
 						case 'mm':
 						case 'm':
 							date.setMonth(val - 1);
+							break;
+						case 'M':
+							date.setMonth(DPGlobal.dates.monthsShort.indexOf(val));
+							break;
+						case 'MM':
+							date.setMonth(DPGlobal.dates.months.indexOf(val));
 							break;
 						case 'yy':
 							date.setFullYear(2000 + val);
@@ -362,6 +368,8 @@
 			};
 			val.dd = (val.d < 10 ? '0' : '') + val.d;
 			val.mm = (val.m < 10 ? '0' : '') + val.m;
+			val.M = DPGlobal.dates.monthsShort[val.m - 1];
+			val.MM = DPGlobal.dates.months[val.m - 1];
 			var date = [];
 			for (var i=0, cnt = format.parts.length; i < cnt; i++) {
 				date.push(val[format.parts[i]]);
