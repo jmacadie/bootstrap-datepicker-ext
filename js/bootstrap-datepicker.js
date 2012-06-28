@@ -76,7 +76,8 @@
 			}
 			this.element.trigger({
 				type: 'show',
-				date: this.date
+				date: this.date,
+				obj: this
 			});
 		},
 		
@@ -92,7 +93,8 @@
 			if (this.isInput) this.element.prop('disabled', false);
 			this.element.trigger({
 				type: 'hide',
-				date: this.date
+				date: this.date,
+				obj: this
 			});
 		},
 		
@@ -261,7 +263,8 @@
 							this.setValue();
 							this.element.trigger({
 								type: 'changeDate',
-								date: this.date
+								date: this.date,
+								obj: this
 							});
 						}
 						break;
